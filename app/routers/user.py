@@ -4,7 +4,7 @@ from typing import List, Union
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from schemas import User
+from schemas import User, ShowUser
 from app.db.database import get_db
 from app.db import models
 
@@ -14,16 +14,15 @@ router = APIRouter(prefix="/user", tags=["Users"])
 
 
 @router.get("/")
-def obtener_usuarios(db: Session = Depends(get_db)) -> List[User]:
-    """Metodo que retorna un listado de usuarios"""
+def obtener_usuarios(db: Session = Depends(get_db), response_model=List[ShowUser]) -> List[User]:
+    """ Metodo que retorna un listado de usuarios"""
     data = db.query(models.User).all()
-    logging.info("aqui todo bien")
     logging.debug(data)
 
-    return usuarios
+    return data
 
 
-@router.post("/user")
+@router.post("/")
 def crear_usuario(user: User, db: Session = Depends(get_db)) -> dict[str, str]:
     usuario = user.dict()
 
@@ -42,12 +41,12 @@ def crear_usuario(user: User, db: Session = Depends(get_db)) -> dict[str, str]:
     return {"respuesta": "Usuario creado correctamente!"}
 
 
-@router.post("/{user_id}")
-def obtener_usuario(user_id: int):
-    for user in usuarios:
-        if user["id"] == user_id:
-            return {"usuario": user["id"]}
-    return {"detail": "Usuario no existe"}
+@router.get("/{user_id}", response_model=ShowUser)
+def obtener_usuario(user_id: int, db: Session = Depends(get_db)):
+    usuario = db.query(models.User).filter(models.User.id == user_id).first()
+    if not usuario:
+        return {"detail": "El usuario no existe"}
+    return usuario
 
 
 @router.delete("/")

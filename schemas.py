@@ -1,11 +1,12 @@
-from pydantic import BaseModel
-
+""" Schemas """
 from typing import Optional
 from datetime import datetime
 
+from pydantic import BaseModel
 
-# UserModel
+
 class User(BaseModel):
+    """ User """
     username: str
     password: str
     nombre: str
@@ -17,4 +18,19 @@ class User(BaseModel):
 
 
 class UserId(BaseModel):
+    """User id"""
+
     id: int
+
+
+class ShowUser(BaseModel):
+    """Clase para de Response en un metodo"""
+
+    username: str
+    nombre: str
+    correo: str
+
+    class Config:
+        """Bandera para declarar un base model como respomse"""
+
+        orm_mode = True
