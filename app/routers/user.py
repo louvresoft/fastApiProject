@@ -23,7 +23,7 @@ def obtener_usuarios(data_base: Session = Depends(get_db)) -> List[ShowUser]:
 
 @router.post("/")
 def crear_usuario(user: User, data_base: Session = Depends(get_db)) -> dict[str, str]:
-    """ Crea un usuario """
+    """Crea un usuario"""
     usuario = user.dict()
 
     nuevo_usuario = models.User(
@@ -43,7 +43,7 @@ def crear_usuario(user: User, data_base: Session = Depends(get_db)) -> dict[str,
 
 @router.get("/{user_id}", response_model=ShowUser)
 def obtener_usuario(user_id: int, data_base: Session = Depends(get_db)):
-    """ Obtiene un usuario por su id"""
+    """Obtiene un usuario por su id"""
     usuario = data_base.query(models.User).filter(models.User.id == user_id).first()
     if not usuario:
         return {"detail": "El usuario no existe"}
@@ -54,7 +54,7 @@ def obtener_usuario(user_id: int, data_base: Session = Depends(get_db)):
 def eliminar_usuario(
     user_id: int, data_base: Session = Depends(get_db)
 ) -> Union[dict[str, str], dict[str, str]]:
-    """ Elimina un usuario """
+    """Elimina un usuario"""
     usuario = data_base.query(models.User).filter(models.User.id == user_id)
     if not usuario.first():
         return {"detail": "usuario no encontrado"}
@@ -64,8 +64,10 @@ def eliminar_usuario(
 
 
 @router.patch("/{user_id}")
-def actualizar_user(user_id: int, updateuser: UpdateUser, data_base: Session = Depends(get_db)):
-    """ Actualiza un usuario """
+def actualizar_user(
+    user_id: int, updateuser: UpdateUser, data_base: Session = Depends(get_db)
+):
+    """Actualiza un usuario"""
     usuario = data_base.query(models.User).filter(models.User.id == user_id)
     if not usuario.first():
         return {"detail": "Usuario no encontrado!!"}
