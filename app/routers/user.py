@@ -13,11 +13,10 @@ usuarios: List[User] = []
 router = APIRouter(prefix="/user", tags=["Users"])
 
 
-@router.get("/")
-def obtener_usuarios(db: Session = Depends(get_db), response_model=List[ShowUser]) -> List[User]:
+@router.get("/", response_model=List[ShowUser])
+def obtener_usuarios(db: Session = Depends(get_db)) -> List[ShowUser]:
     """ Metodo que retorna un listado de usuarios"""
     data = db.query(models.User).all()
-    logging.debug(data)
 
     return data
 
@@ -50,12 +49,13 @@ def obtener_usuario(user_id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/")
-def eliminar_usuario(user_id: int) -> Union[dict[str, str], dict[str, str]]:
-    for index, user in enumerate(usuarios):
-        if user["id"] == user_id:
-            usuarios.pop(index)
-            return {"respuesta": "Usuario eliminado correctamente"}
-    return {"respuesta": "usuario no encontrado!!"}
+def eliminar_usuario(user_id: int, db: Session = Depends(get_db)) -> Union[dict[str, str], dict[str, str]]:
+    usuario = db.query(models.User).filter(models.User.id == user_id)
+    if not usuario.first():
+        return {"detail": "usuario no encontrado"}
+    usuario.delete(synchronize_session=False)
+    db.commit()
+    return {"detail": "usuario eliminado correctamente."}
 
 
 @router.put("/{user_id}")
