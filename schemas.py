@@ -18,6 +18,19 @@ class User(BaseModel):
     creacion: datetime = datetime.now()
 
 
+class UpdateUser(BaseModel):
+    """User"""
+
+    username: str = None
+    password: str = None
+    nombre: str = None
+    apellido: str = None
+    direccion: str = None
+    telefono: int = None
+    correo: str = None
+    creacion: datetime = None
+
+
 class UserId(BaseModel):
     """User id"""
 
