@@ -32,5 +32,7 @@ class ShowUser(BaseModel):
     correo: str
 
     class Config:
+
         """ Bandera para declarar un base model como response """
+
         orm_mode = True
