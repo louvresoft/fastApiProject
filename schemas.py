@@ -6,11 +6,13 @@ from datetime import datetime
 
 # UserModel
 class User(BaseModel):
-    id: int
+    username: str
+    password: str
     nombre: str
     apellido: str
     direccion: Optional[str]
     telefono: int
+    correo: str
     creacion: datetime = datetime.now()
 
 
