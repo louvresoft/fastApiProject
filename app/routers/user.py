@@ -2,10 +2,10 @@ import logging
 from typing import List, Union
 
 from fastapi import APIRouter, Depends
-
-from schemas import User, UserId
-from app.db.database import get_db
 from sqlalchemy.orm import Session
+
+from schemas import User
+from app.db.database import get_db
 from app.db import models
 
 usuarios: List[User] = []
@@ -15,7 +15,7 @@ router = APIRouter(prefix="/user", tags=["Users"])
 
 @router.get("/")
 def obtener_usuarios(db: Session = Depends(get_db)) -> List[User]:
-    """ metodo que retorna un listado de usuarios """
+    """Metodo que retorna un listado de usuarios"""
     data = db.query(models.User).all()
     logging.info("aqui todo bien")
     logging.debug(data)
@@ -23,11 +23,23 @@ def obtener_usuarios(db: Session = Depends(get_db)) -> List[User]:
     return usuarios
 
 
-@router.post("/ruta2")
-def ruta2(user: User) -> dict[str, str]:
+@router.post("/user")
+def crear_usuario(user: User, db: Session = Depends(get_db)) -> dict[str, str]:
     usuario = user.dict()
-    usuarios.append(usuario)
-    return {"respuesta": "Usuario creado satisfactoriamente!"}
+
+    nuevo_usuario = models.User(
+        username=usuario.get("username"),
+        password=usuario.get("password"),
+        nombre=usuario.get("nombre"),
+        apellido=usuario.get("apellido"),
+        direccion=usuario.get("direccion"),
+        telefono=usuario.get("telefono"),
+        correo=usuario.get("correo"),
+    )
+    db.add(nuevo_usuario)
+    db.commit()
+    db.refresh(nuevo_usuario)
+    return {"respuesta": "Usuario creado correctamente!"}
 
 
 @router.post("/{user_id}")
@@ -35,7 +47,7 @@ def obtener_usuario(user_id: int):
     for user in usuarios:
         if user["id"] == user_id:
             return {"usuario": user["id"]}
-    return {"detail": "Usuario no exoste"}
+    return {"detail": "Usuario no existe"}
 
 
 @router.delete("/")
