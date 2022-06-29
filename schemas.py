@@ -6,7 +6,8 @@ from pydantic import BaseModel
 
 
 class User(BaseModel):
-    """ User """
+    """User"""
+
     username: str
     password: str
     nombre: str
@@ -31,6 +32,5 @@ class ShowUser(BaseModel):
     correo: str
 
     class Config:
-        """Bandera para declarar un base model como respomse"""
-
+        """ Bandera para declarar un base model como response """
         orm_mode = True
