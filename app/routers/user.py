@@ -1,5 +1,5 @@
 """ Vistas de user """
-from typing import List, Union
+from typing import List, Union, Dict, Any
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
@@ -28,9 +28,13 @@ def crear_usuario(usuario: User, data_base: Session = Depends(get_db)) -> dict[s
 
 
 @router.get("/{user_id}", response_model=ShowUser)
-def obtener_usuario(user_id: int, data_base: Session = Depends(get_db)):
-    """Obtiene un usuario por su id"""
-    usuario = user.obtener_usuario(user_id, data_base=data_base)
+def obtener_usuario(user_id: int, data_base: Session = Depends(get_db)) -> object:
+    """Obtiene un usuario por su id
+    :param user_id: 
+    :param data_base: 
+    :return: 
+    """
+    usuario: Union[dict[str, str], Any] = user.obtener_usuario(user_id, data_base=data_base)
     return usuario
 
 

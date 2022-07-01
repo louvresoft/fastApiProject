@@ -3,11 +3,10 @@ from app.routers import user
 from app.db.database import Base, engine
 
 
-def create_table():
-    Base.metadata.create_all(bind=engine)
-
-
-create_table()
+# def create_table():
+# Se comenta por configuracion de alembic
+#     Base.metadata.create_all(bind=engine)
+# create_table()
 
 
 app = FastAPI()

@@ -19,6 +19,7 @@ class User(Base):
     correo = Column(String, unique=True)
     creacion = Column(DateTime, default=datetime.now, onupdate=datetime.now)
     estado = Column(Boolean, default=False)
+    municipio = Column(String, nullable=True)
     venta = relationship("Venta", backref="usuario", cascade="delete, merge")
 
 
