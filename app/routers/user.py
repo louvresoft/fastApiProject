@@ -1,7 +1,7 @@
 """ Vistas de user """
 from typing import List, Union, Dict, Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from schemas import User, ShowUser, UpdateUser
@@ -13,14 +13,14 @@ usuarios: List[User] = []
 router = APIRouter(prefix="/user", tags=["Users"])
 
 
-@router.get("/", response_model=List[ShowUser])
+@router.get("/", response_model=List[ShowUser], status_code=status.HTTP_200_OK)
 def obtener_usuarios(data_base: Session = Depends(get_db)) -> List[ShowUser]:
     """Metodo que retorna un listado de usuarios"""
     response = user.obtener_usuarios(data_base=data_base)
     return response
 
 
-@router.post("/")
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def crear_usuario(usuario: User, data_base: Session = Depends(get_db)) -> dict[str, str]:
     """Crea un usuario"""
     user.crear_usuario(data_base=data_base, usuario=usuario)
