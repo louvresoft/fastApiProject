@@ -27,7 +27,7 @@ def crear_usuario(usuario: User, data_base: Session = Depends(get_db)) -> dict[s
     return {"respuesta": "Usuario creado correctamente!"}
 
 
-@router.get("/{user_id}", response_model=ShowUser)
+@router.get("/{user_id}", response_model=ShowUser, status_code=status.HTTP_200_OK)
 def obtener_usuario(user_id: int, data_base: Session = Depends(get_db)) -> object:
     """Obtiene un usuario por su id
     :param user_id: 
@@ -38,7 +38,7 @@ def obtener_usuario(user_id: int, data_base: Session = Depends(get_db)) -> objec
     return usuario
 
 
-@router.delete("/")
+@router.delete("/", status_code=status.HTTP_200_OK)
 def eliminar_usuario(
     user_id: int, data_base: Session = Depends(get_db)
 ) -> Union[dict[str, str], dict[str, str]]:
@@ -47,7 +47,7 @@ def eliminar_usuario(
     return response
 
 
-@router.patch("/{user_id}")
+@router.patch("/{user_id}", status_code=status.HTTP_200_OK)
 def actualizar_user(
     user_id: int, usuario_actualizado: UpdateUser, data_base: Session = Depends(get_db)
 ):

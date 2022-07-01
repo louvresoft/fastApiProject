@@ -1,6 +1,10 @@
 from sqlalchemy.orm import Session
+from passlib.context import CryptContext
 from fastapi import HTTPException, status
 from app.db import models
+from app.hashing import Hash
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def crear_usuario(usuario, data_base: Session):
@@ -8,7 +12,7 @@ def crear_usuario(usuario, data_base: Session):
     try:
         nuevo_usuario = models.User(
             username=usuario.get("username"),
-            password=usuario.get("password"),
+            password=Hash.hash_password(usuario.get("password")),
             nombre=usuario.get("nombre"),
             apellido=usuario.get("apellido"),
             direccion=usuario.get("direccion"),
