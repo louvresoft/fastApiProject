@@ -1,5 +1,5 @@
 """ Schemas """
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -21,14 +21,14 @@ class User(BaseModel):
 class UpdateUser(BaseModel):
     """User"""
 
-    username: str = None
-    password: str = None
-    nombre: str = None
-    apellido: str = None
-    direccion: str = None
-    telefono: int = None
-    correo: str = None
-    creacion: datetime = None
+    username: str
+    password: str
+    nombre: str
+    apellido: str
+    direccion: str
+    telefono: int
+    correo: str
+    creacion: datetime
 
 
 class UserId(BaseModel):
@@ -49,3 +49,17 @@ class ShowUser(BaseModel):
         """ Bandera para declarar un base model como response """
 
         orm_mode = True
+
+
+class Login(BaseModel):
+    username: str
+    password: str
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    usernem: Union[str, None] = None
