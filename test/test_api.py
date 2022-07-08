@@ -3,6 +3,7 @@ import random
 import sys
 import os
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -53,18 +54,7 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 
-def test_crear_usuario():
-    usuario_datos = {
-        "username": "dafma1",
-        "password": "Pruebas123*1",
-        "nombre": "Dafma1",
-        "apellido": "Reads1",
-        "direccion": "Toluca1",
-        "telefono": 1234561,
-        "correo": "dafma1@gmail.com",
-        "creacion": "2022-07-04T21:21:59.979195",
-    }
-
+def crear_usuario_y_login() -> dict:
     usuario = {
         "username": "prueba",
         "password": "prueba12"
@@ -76,10 +66,47 @@ def test_crear_usuario():
     headers = {
         "Authorization": f"Bearer {response_token.json()['access_token']}"
     }
+    return headers
+
+
+def test_crear_usuario() -> None:
+    usuario_datos = {
+        "username": "dafma1",
+        "password": "Pruebas123*1",
+        "nombre": "Dafma1",
+        "apellido": "Reads1",
+        "direccion": "Toluca1",
+        "telefono": 1234561,
+        "correo": "dafma1@gmail.com",
+        "creacion": "2022-07-04T21:21:59.979195",
+    }
+
+    headers = crear_usuario_y_login()
 
     response = cliente.post('/user/', json=usuario_datos, headers=headers)
     assert response.status_code == 201
     assert response.json()["respuesta"] == "Usuario creado correctamente!"
+
+
+def test_obtener_usuarios() -> None:
+    headers = crear_usuario_y_login()
+    response = cliente.get('/user/', headers=headers)
+    assert response.status_code == 200
+    assert len(response.json()) == 2
+
+
+def test_obtener_usuario() -> None:
+    headers = crear_usuario_y_login()
+    response = cliente.get('/user/2', headers=headers)
+    datos = response.json()
+    assert type(datos.get("username")) == str
+    assert response.status_code == 200
+
+
+# def test_eliminar_usuario() -> None:
+#     headers = crear_usuario_y_login()
+#     response = cliente.delete('/user/1', headers=headers)
+#     assert response.status_code == 200
 
 
 def test_delete_database():
