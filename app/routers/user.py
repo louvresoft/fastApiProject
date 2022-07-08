@@ -27,7 +27,7 @@ def obtener_usuarios(
 def crear_usuario(
     usuario: User,
     data_base: Session = Depends(get_db),
-    #current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_user),
 ) -> dict[str, str]:
     """Crea un usuario"""
     user.crear_usuario(data_base=data_base, usuario=usuario)
